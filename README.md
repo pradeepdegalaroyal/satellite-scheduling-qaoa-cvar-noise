@@ -15,7 +15,7 @@ Blekos et al. (2024, doi:10.1016/j.physrep.2024.03.002) and Abbas et al. (2024, 
 flowchart LR
   A["Targets and conflicts"] --> B["Penalty QUBO"]
   B --> C["QAOA p = 1, 2<br/>256-shot mean or CVaR objective"]
-  C --> D["Depolarising noise<br/>F = (1 - e)^(2 |"E"| p)"]
+  C --> D["Depolarising noise<br/>F = (1 - e)^(2 E p)<br/>E = number of edges"]
   D --> E["30 shots: best sample<br/>plus greedy repair"]
   B --> F["Random / annealing / greedy"]
   E --> G["Ratio to exact optimum"]
