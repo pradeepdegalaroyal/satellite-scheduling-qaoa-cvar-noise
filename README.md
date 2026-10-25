@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.11-blue)
 [![CI](https://github.com/pradeepdegalaroyal/satellite-scheduling-qaoa-cvar-noise/actions/workflows/ci.yml/badge.svg)](https://github.com/pradeepdegalaroyal/satellite-scheduling-qaoa-cvar-noise/actions)
 
-**Abstract.** This simulation study asks whether training QAOA with a CVaR objective helps Earth-observation scheduling (max-weight independent set on a conflict graph) when training uses finite shots and gate noise grows with graph density. On n=8-12 qubits and 5 instances, QAOA beats random sampling and simulated annealing at a matched 30-sample budget, but CVaR gives no measurable gain over the plain expectation, and a simple greedy heuristic is as good or better. The hypothesis is therefore not supported; the repository provides a reproducible noise-aware benchmark harness.
+**Abstract.** This simulation study asks whether training Quantum Approximate Optimization Algorithm (QAOA) with a conditional value at risk (CVaR) objective helps Earth-observation scheduling (max-weight independent set on a conflict graph) when training uses finite shots and gate noise grows with graph density. On n=8-12 qubits and 5 instances, QAOA beats random sampling and simulated annealing at a matched 30-sample budget, but CVaR gives no measurable gain over the plain expectation, and a simple greedy heuristic is as good or better. The hypothesis is therefore not supported; the repository provides a reproducible noise-aware benchmark harness.
 
 ## Motivation and gap
 Blekos et al. (2024, doi:10.1016/j.physrep.2024.03.002) and Abbas et al. (2024, doi:10.1038/s42254-024-00770-9) call for noise-aware, systematic benchmarking of QAOA; Brandhofer et al. (2023, doi:10.1007/s11128-022-03766-5) show that shot and gate noise are practical issues for constrained QAOA. Space-technology scheduling is a natural target, but its behaviour at a small sample budget against strong classical baselines is rarely reported. See [docs/RESEARCH_GAP.md](docs/RESEARCH_GAP.md) and [docs/METHOD.md](docs/METHOD.md).
@@ -15,7 +15,7 @@ Blekos et al. (2024, doi:10.1016/j.physrep.2024.03.002) and Abbas et al. (2024, 
 flowchart LR
   A["Targets and conflicts"] --> B["Penalty QUBO"]
   B --> C["QAOA p = 1, 2<br/>256-shot mean or CVaR objective"]
-  C --> D["Depolarising noise<br/>F = (1 - e)^(2 |E| p)"]
+  C --> D["Depolarising noise<br/>F = (1 - e)^(2 |"E"| p)"]
   D --> E["30 shots: best sample<br/>plus greedy repair"]
   B --> F["Random / annealing / greedy"]
   E --> G["Ratio to exact optimum"]
@@ -23,12 +23,14 @@ flowchart LR
   classDef bw fill:#ffffff,stroke:#000000,color:#000000,stroke-width:2px;
   class A,B,C,D,E,F,G bw;
 ```
+
+*Diagram abbreviations: QUBO = quadratic unconstrained binary optimization.*
 Noise is a global-depolarising approximation (mixing with the uniform distribution at the circuit fidelity), not a gate-level simulation.
 
 ## Results (5 instances, mean ± std; from `results/summary.csv`)
 Noise sweep, n=10, best of 30 shots, repaired ratio (raw ratio in brackets):
 
-| CNOT error | QAOA mean (alpha=1) | QAOA CVaR (alpha=0.1) |
+| Controlled-NOT (CNOT) error | QAOA mean (alpha=1) | QAOA CVaR (alpha=0.1) |
 |---|---|---|
 | 0 | 0.949 ± 0.023 (0.931 ± 0.032) | 0.943 ± 0.022 (0.916 ± 0.025) |
 | 0.001 | 0.931 ± 0.022 (0.905 ± 0.033) | 0.941 ± 0.023 (0.883 ± 0.042) |
@@ -50,10 +52,10 @@ Scaling at 0.003 CNOT error, repaired ratio (QAOA alpha=1 / QAOA alpha=0.1 / gre
 - Gate noise lowers the raw ratio (0.931 to 0.851 for alpha=1) and the feasible mass (0.611 to 0.300), while greedy repair hides most of the loss, so reporting only repaired ratios would overstate hardware robustness.
 
 ## Limitations
-Exact statevector with n<=12; global-depolarising noise with all-to-all connectivity (no routing, readout or coherent errors); synthetic instances; a 30-shot budget chosen so that sampling is not trivially exhaustive at this size; 5 instances give wide error bars; a single optimiser (COBYLA, 60 iterations).
+Exact statevector with n<=12; global-depolarising noise with all-to-all connectivity (no routing, readout or coherent errors); synthetic instances; a 30-shot budget chosen so that sampling is not trivially exhaustive at this size; 5 instances give wide error bars; a single optimiser (Constrained Optimization BY Linear Approximation (COBYLA), 60 iterations).
 
 ## Future work
-Gate-level noisy simulation or hardware runs with transpiled depth, realistic orbital pass and visibility instances, larger n with MPS or sampling-based estimators, warm-started and constraint-preserving mixers, and comparison with stronger classical solvers.
+Gate-level noisy simulation or hardware runs with transpiled depth, realistic orbital pass and visibility instances, larger n with matrix product states (MPS) or sampling-based estimators, warm-started and constraint-preserving mixers, and comparison with stronger classical solvers.
 
 ## Reproducibility
 ```
@@ -63,7 +65,7 @@ pytest -q
 python experiments/run_all.py          # about 1 minute (55 s measured); writes results/ and figures/
 python experiments/run_all.py --quick  # smoke run, a few seconds; writes results_quick/
 ```
-Hardware: Windows 11, Python 3.11.9, CPU only (NumPy).
+Hardware: Windows 11, Python 3.11.9, central processing unit (CPU) only (NumPy).
 
 ## Related work by the author
 [qaoa-best-of-k-sampling-noise](https://github.com/pradeepdegalaroyal/qaoa-best-of-k-sampling-noise), [xy-mixer-vs-penalty-qaoa-noise-crossover](https://github.com/pradeepdegalaroyal/xy-mixer-vs-penalty-qaoa-noise-crossover).
@@ -85,4 +87,4 @@ If you use this code, please cite it (see also [CITATION.cff](CITATION.cff)):
 }
 ```
 
-MIT license (`LICENSE`).
+Massachusetts Institute of Technology (MIT) license (`LICENSE`).
