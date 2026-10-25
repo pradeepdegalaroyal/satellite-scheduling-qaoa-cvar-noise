@@ -11,14 +11,17 @@ Blekos et al. (2024, doi:10.1016/j.physrep.2024.03.002) and Abbas et al. (2024, 
 
 ## Method
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff', 'background': '#ffffff'}}}%%
 flowchart LR
-  A[Targets and conflicts] --> B[Penalty QUBO]
-  B --> C[QAOA p=1,2 with 256-shot mean or CVaR objective]
-  C --> D[Depolarising noise, F = (1-e)^(2 E p)]
-  D --> E[30 shots: best sample plus greedy repair]
-  B --> F[Random / annealing / greedy]
-  E --> G[Ratio to exact optimum]
+  A["Targets and conflicts"] --> B["Penalty QUBO"]
+  B --> C["QAOA p = 1, 2<br/>256-shot mean or CVaR objective"]
+  C --> D["Depolarising noise<br/>F = (1 - e)^(2 |E| p)"]
+  D --> E["30 shots: best sample<br/>plus greedy repair"]
+  B --> F["Random / annealing / greedy"]
+  E --> G["Ratio to exact optimum"]
   F --> G
+  classDef bw fill:#ffffff,stroke:#000000,color:#000000,stroke-width:2px;
+  class A,B,C,D,E,F,G bw;
 ```
 Noise is a global-depolarising approximation (mixing with the uniform distribution at the circuit fidelity), not a gate-level simulation.
 
@@ -69,4 +72,17 @@ Hardware: Windows 11, Python 3.11.9, CPU only (NumPy).
 `src/satqaoa/` (problem, qaoa, baselines), `experiments/run_all.py`, `tests/`, `docs/`, `results/`, `figures/`.
 
 ## Citation
-See [CITATION.cff](CITATION.cff). License: MIT.
+If you use this code, please cite it (see also [CITATION.cff](CITATION.cff)):
+
+```bibtex
+@software{chenchupradeep2026satqaoa,
+  author  = {Chenchupradeep, Degala},
+  title   = {Satellite observation scheduling with QAOA: mean versus CVaR objectives under gate noise},
+  year    = {2026},
+  version = {0.1.0},
+  url     = {https://github.com/pradeepdegalaroyal/satellite-scheduling-qaoa-cvar-noise},
+  license = {MIT}
+}
+```
+
+MIT license (`LICENSE`).
